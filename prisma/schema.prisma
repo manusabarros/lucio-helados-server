@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int       @default(autoincrement()) @id
+  name        String    @unique
+  description String?
+  product     Product[]
+
+  @@map("category")
+}
+
+model Flavor {
+  id        Int     @default(autoincrement()) @id
+  groupId   Int     @map("group_id")
+  productId Int     @map("product_id")
+  group     Group   @relation(fields: [groupId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("flavor")
+}
+
+model Group {
+  id          Int      @default(autoincrement()) @id
+  name        String   @unique
+  description String?
+  flavor      Flavor[]
+
+  @@map("group")
+}
+
+model Package {
+  id        Int     @default(autoincrement()) @id
+  price     Float
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("package")
+}
+
+model Product {
+  id          Int       @default(autoincrement()) @id
+  name        String    @unique
+  description String?
+  cost        Float
+  stock       Int
+  flavor      Flavor[]
+  package     Package[]
+  categoryId  Int       @map("category_id")
+  category    Category  @relation(fields: [categoryId], references: [id])
+
+  @@map("product")
+}
+
+model Action {
+  id          Int           @default(autoincrement()) @id
+  name        String        @unique
+  description String?
+  permission  Permission[]
+
+  @@map("action")
+}
+
+model Permission {
+  id        Int     @default(autoincrement()) @id
+  roleId    Int     @map("role_id")
+  actionId  Int     @map("action_id")
+  role      Role    @relation(fields: [roleId], references: [id])
+  action    Action  @relation(fields: [actionId], references: [id])
+
+  @@map("permission")
+}
+
+model Role {
+  id          Int           @default(autoincrement()) @id
+  name        String        @unique
+  description String?
+  user        User[]
+  permission  Permission[]
+
+  @@map("role")
+}
+
+model User {
+  id              Int     @default(autoincrement()) @id
+  username        String  @unique
+  password        String
+  firstName       String? @map("first_name")
+  lastName        String? @map("last_name")
+  roleId          Int     @map("role_id")
+  role            Role    @relation(fields: [roleId], references: [id])
+
+  @@map("user")
+}
