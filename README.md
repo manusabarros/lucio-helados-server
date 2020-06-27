@@ -1,2 +1,2 @@
-# graphql-yoga-auth-base
-Base project for a graphql-yoga server with users authentication and authorization. Prisma ORM and Postgresql DB.
+# lucio-helados-server
+Server for lucio-helados project. GraphQL Yoga server and Postgresql DB.
