@@ -9,7 +9,7 @@ export const security = async (user: any, action?: number | string) => {
             permissions = await prisma.permission.findMany({ where: { roleId: user.e } });
             break;
         case "string" :
-            permissions = await prisma.action.findOne({ where: { name: action } }).permission({ where: { roleId: user.e } });
+            permissions = await prisma.function.findOne({ where: { name: action } }).permission({ where: { roleId: user.e } });
             break;
     }
     if (permissions.length === 0) throw new Error("No se encuentra autorizado para realizar esta acción.");
