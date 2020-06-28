@@ -1,6 +1,6 @@
 import { Permission, IPermission } from "../models/permission";
 
-export const security = async (user: any, _function?: number | string) => {
+export const security = async (user: any, _function?: number | string): Promise<boolean> => {
     if (!user) throw new Error("No se encuentra autenticado.");
     if (!_function) return true;
     let permissions: IPermission[] = [];

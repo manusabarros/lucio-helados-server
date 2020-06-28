@@ -9,6 +9,10 @@ export interface IUser {
     roleId: number;
 }
 
+export interface IToken {
+    token: string;
+}
+
 export interface ISignUpUser {
     username: string;
     password: string;
@@ -55,7 +59,7 @@ User.getUserById = async (id: number): Promise<IUser | null> => await prisma.use
 
 User.getUserByUsername = async (username: string): Promise<IUser | null> => await prisma.user.findOne({ where: { username } });
 
-User.updateUserById = async (id: number, input: any) => {
+User.updateUserById = async (id: number, input: any): Promise<IUser> => {
     if (input.roleId) {
         return await prisma.user.update({
             where: { id },
@@ -83,4 +87,4 @@ User.updateUserById = async (id: number, input: any) => {
     });
 };
 
-User.deleteUserById = async (id: number) => await prisma.user.delete({ where: { id }, select });
+User.deleteUserById = async (id: number): Promise<IUser> => await prisma.user.delete({ where: { id }, select });

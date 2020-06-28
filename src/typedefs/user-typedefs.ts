@@ -7,6 +7,10 @@ export const UserTypeDef = `
         roleId: Int!
     }
 
+    type Token {
+        token: String!
+    }
+
     input LoginInput {
         username: String!
         password: String!
@@ -28,7 +32,7 @@ export const UserTypeDef = `
     }
 
     type Query {
-        login(input: LoginInput!): String!
+        login(input: LoginInput!): Token!
         authenticate: Boolean!
         getUsers: [User]
         getUserById(id: Int!): User

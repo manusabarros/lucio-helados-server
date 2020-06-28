@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request } from "express";
-import { User, ISignUpUser, IUser, ILoginUser } from "../models/user";
+import { User, ISignUpUser, IUser, ILoginUser, IToken } from "../models/user";
 
 export const UserController = () => {};
 
@@ -13,7 +13,7 @@ UserController.signup = async (input: ISignUpUser): Promise<IUser> => {
     return await User.signup(input);
 };
 
-UserController.login = async ({ username, password }: ILoginUser, request: Request) => {
+UserController.login = async ({ username, password }: ILoginUser, request: Request): Promise<IToken> => {
     const userFound = await User.getUserByUsername(username);
     if (!userFound) throw new Error("Usuario o contraseña incorrectos.");
     const samePassword = await bcrypt.compare(password, userFound.password);
@@ -30,13 +30,13 @@ UserController.login = async ({ username, password }: ILoginUser, request: Reque
         { expiresIn: "15m" }
     );
     if (request.session) request.session.token = token;
-    return token;
+    return { token };
 };
 
-UserController.getUsers = async () => await User.getUsers();
+UserController.getUsers = async (): Promise<IUser[]> => await User.getUsers();
 
-UserController.getUserById = async (id: number) => await User.getUserById(id);
+UserController.getUserById = async (id: number): Promise<IUser | null> => await User.getUserById(id);
 
-UserController.updateUserById = async (id: number, input: any) => await User.updateUserById(id, input);
+UserController.updateUserById = async (id: number, input: any): Promise<IUser> => await User.updateUserById(id, input);
 
-UserController.deleteUserById = async (id: number) => await User.deleteUserById(id);
+UserController.deleteUserById = async (id: number): Promise<IUser> => await User.deleteUserById(id);
