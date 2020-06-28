@@ -10,13 +10,13 @@ export const UserQuery = {
     },
     getUsers: {
         resolve: async (parent: any, args: any, { user }: any) => {
-            await security(user);
+            await security(user, "GET_USERS");
             return await UserController.getUsers();
         }
     },
     getUserById: {
         resolve: async (parent: any, { id }: any, { user }: any) => {
-            await security(user);
+            await security(user, "USER_FIND");
             return await UserController.getUserById(id);
         },
     },

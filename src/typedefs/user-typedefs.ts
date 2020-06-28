@@ -20,6 +20,13 @@ export const UserTypeDef = `
         roleId: Int!
     }
 
+    input UpdateInput {
+        username: String
+        firstName: String
+        lastName: String
+        roleId: Int
+    }
+
     type Query {
         login(input: LoginInput!): String!
         authenticate: Boolean!
@@ -29,5 +36,7 @@ export const UserTypeDef = `
 
     type Mutation {
         signup(input: SignUpInput!): User!
+        updateUserById(id: Int!, input: UpdateInput): User!
+        deleteUserById(id: Int!): User!
     }
 `;

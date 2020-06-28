@@ -1,18 +1,17 @@
-import { prisma } from "../config/prisma-client";
+import { Permission, IPermission } from "../models/permission";
 
-export const security = async (user: any, action?: number | string) => {
+export const security = async (user: any, _function?: number | string) => {
     if (!user) throw new Error("No se encuentra autenticado.");
-    if (!action) return true;
-    let permissions: any[] = [];
-    switch (typeof action) {
+    if (!_function) return true;
+    let permissions: IPermission[] = [];
+    switch (typeof _function) {
         case "number" :
-            permissions = await prisma.permission.findMany({ where: { roleId: user.e } });
+            permissions = await Permission.getPermissionsByFunctionId(user.e, _function)
             break;
         case "string" :
-            permissions = await prisma.function.findOne({ where: { name: action } }).permission({ where: { roleId: user.e } });
+            permissions = await Permission.getPermissionsByFunctionName(user.e, _function);
             break;
     }
     if (permissions.length === 0) throw new Error("No se encuentra autorizado para realizar esta acción.");
-    if (permissions.every(value => value.roleId !== user.e)) throw new Error("No se encuentra autorizado para realizar esta acción.");
     return true;
 };

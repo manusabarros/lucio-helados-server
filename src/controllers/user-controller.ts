@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user";
+import { Request } from "express";
+import { User, ISignUpUser, IUser, ILoginUser } from "../models/user";
 
 export const UserController = () => {};
 
-UserController.signup = async (input: any, user: any) => {
+UserController.signup = async (input: ISignUpUser): Promise<IUser> => {
     const userFound = await User.getUserByUsername(input.username);
     if (userFound) throw new Error("Nombre de usuario no disponible.");
     const hashedPassword = await bcrypt.hash(input.password, 12);
@@ -12,7 +13,7 @@ UserController.signup = async (input: any, user: any) => {
     return await User.signup(input);
 };
 
-UserController.login = async ({ username, password }: any, request: any) => {
+UserController.login = async ({ username, password }: ILoginUser, request: Request) => {
     const userFound = await User.getUserByUsername(username);
     if (!userFound) throw new Error("Usuario o contraseña incorrectos.");
     const samePassword = await bcrypt.compare(password, userFound.password);
@@ -28,10 +29,14 @@ UserController.login = async ({ username, password }: any, request: any) => {
         process.env.SECRET as string,
         { expiresIn: "15m" }
     );
-    request.session.token = token;
+    if (request.session) request.session.token = token;
     return token;
 };
 
 UserController.getUsers = async () => await User.getUsers();
 
 UserController.getUserById = async (id: number) => await User.getUserById(id);
+
+UserController.updateUserById = async (id: number, input: any) => await User.updateUserById(id, input);
+
+UserController.deleteUserById = async (id: number) => await User.deleteUserById(id);
