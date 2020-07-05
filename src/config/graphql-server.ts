@@ -9,13 +9,17 @@ export const server = new GraphQLServer({
     context: (context) => {
         const { session, headers } = context.request;
         let token: string = "";
-        if (session) token = session.token;
+        let user: any = null;
+        if (session && session.user) user = session.user;
         if (headers.authorization) token = headers.authorization.split(" ")[1];
-        if (!token) return context;
-        const user = jwt.verify(token, process.env.SECRET as string, (err, decoded) => {
-            if (err) return;
-            return decoded;
-        });
+        if (token)
+            user = jwt.verify(token, process.env.SECRET as string, (err, decoded) => {
+                if (err) return;
+                return decoded;
+            });
+        if (!user) return context;
+        delete user.iat;
+        delete user.exp;
         return { ...context, user };
     },
 });

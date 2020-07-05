@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { User, ISignUpUser, IUser, ILoginUser, IToken } from "../models/user";
 
 export const UserController = () => {};
@@ -20,17 +20,24 @@ UserController.login = async ({ username, password }: ILoginUser, request: Reque
     if (!samePassword) throw new Error("Usuario o contraseña incorrectos.");
     const token: string = jwt.sign(
         {
-            a: userFound.id,
-            b: userFound.username,
-            c: userFound.firstName,
-            d: userFound.lastName,
-            e: userFound.roleId,
+            id: userFound.id,
+            username: userFound.username,
+            firstName: userFound.firstName,
+            lastName: userFound.lastName,
+            roleId: userFound.roleId,
         },
         process.env.SECRET as string,
         { expiresIn: "15m" }
     );
-    if (request.session) request.session.token = token;
+    delete userFound.password;
+    if (request.session) request.session.user = userFound;
     return { token };
+};
+
+UserController.logout = (req: Request, res: Response) => {
+    res.clearCookie("connect.sid");
+    req.session?.destroy((err: any) => {});
+    return true;
 };
 
 UserController.getUsers = async (): Promise<IUser[]> => await User.getUsers();

@@ -15,7 +15,7 @@ server.express.use(
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
-            maxAge: 60000,
+            maxAge: 900000,
         },
     })
 );

@@ -33,7 +33,8 @@ export const UserTypeDef = `
 
     type Query {
         login(input: LoginInput!): Token!
-        authenticate: Boolean!
+        logout: Boolean
+        authenticate: User!
         getUsers: [User]
         getUserById(id: Int!): User
     }
