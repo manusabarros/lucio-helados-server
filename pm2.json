@@ -1,0 +1,11 @@
+{
+    "apps": [
+        {
+            "name": "lucio-helados",
+            "script": "node_modules/.bin/ts-node src/index.ts",
+            "env": {
+                "NODE_ENV": "production"
+            }
+        }
+    ]
+}
